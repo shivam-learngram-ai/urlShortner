@@ -27,6 +27,7 @@ def shorten():
               type: integer
             url:
               type: string
+              example: https://google.co.in
     responses:
       200:
         description: Short url
@@ -51,3 +52,33 @@ def visit():
     """
 
     return url_controller.visit(request.args.get("url", None))
+
+
+@bp.route("/analytics", methods=["POST"])
+def analytics():
+    """Get analytics of a given URL and a given client id
+    ---
+    tags:
+      - URL
+    parameters:
+      - in: body
+        name: Your URL
+        description: Your URL
+        schema:
+          type: object
+          required:
+            - url
+            - client_id
+          properties:
+            client_id:
+              type: integer
+            url:
+              type: string
+              example: https://google.co.in
+    responses:
+      200:
+        description: Analytics
+    """
+    return url_controller.analytics(
+        *get_parsed_data_list(request, ["url", "client_id"])
+    )

@@ -1,6 +1,7 @@
 from flask import redirect
 
 from models.url import Url
+from models.analytics import Analytics
 
 from utils import db as db_
 from utils.request import response
@@ -20,14 +21,35 @@ def shorten(url, client_id):
     return response(
         success=True,
         message="Your url shortened successfully",
-        short_url=base64.encode(url_object.id),
+        short_url=f"http://localhost:5000/url/visit?url={base64.encode(url_object.id)}",
     )
 
 
 def visit(url):
     url_id = base64.decode(url)
     url_object = Url.query.filter(Url.id == url_id).first()
-    print(url_object)
     if url_object is not None:
+        analytics_row = Analytics(url_id=url_object.id)
+        db_.add_commit_(analytics_row)
         return redirect(url_object.long_url, code=307)
     return "Url not Found"
+
+
+# Analytics
+
+
+def analytics(url, client_id):
+    url_object = (
+        Url.query.filter(Url.long_url == url).filter(Url.client_id == client_id).first()
+    )
+    if url_object is not None:
+        analytics_rows = Analytics.query.filter(Analytics.url_id == url_object.id).all()
+        return response(
+            success=True,
+            message="Analytics generated successfully",
+            num_hits=len(analytics_rows),
+        )
+    return response(
+        success=True,
+        message="This url is not shortened yet",
+    )
