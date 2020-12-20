@@ -1,6 +1,7 @@
 # Setup
 
 ```bash
+# python 3.8 or above will be required
 python -m venv env
 source env/bin/activate
 pip install -r requirements.txt
