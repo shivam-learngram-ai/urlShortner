@@ -9,7 +9,6 @@ from utils import base64
 
 
 def shorten(url, client_id):
-    # url lacking http or https needs to be handled
     url_rows = (
         Url.query.filter(Url.long_url == url).filter(Url.client_id == client_id).all()
     )
