@@ -35,24 +35,19 @@ def shorten():
 
 
 @bp.route("/visit", methods=["GET"])
-def progress():
+def visit():
     """Redirects to the long url given a short url
     ---
     tags:
       - URL
     parameters:
-      - in: body
-        name: Your short URL
-        description: Your short URL
-        schema:
-          type: object
-          required:
-            - url
-          properties:
-            url:
-              type: string
+      - name: url
+        in: query
+        type: string
+        required: true
     responses:
       307:
-        description: Short url
+        description: Redirects to actual URL
     """
-    return redirect("http://www.example.com", code=307)
+
+    return url_controller.visit(request.args.get("url", None))
