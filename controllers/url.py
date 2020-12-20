@@ -31,7 +31,10 @@ def visit(url):
     if url_object is not None:
         analytics_row = Analytics(url_id=url_object.id)
         db_.add_commit_(analytics_row)
-        return redirect(url_object.long_url, code=307)
+        long_url = url_object.long_url
+        if not (long_url.startswith("http://") or long_url.startswith("https://")):
+            long_url = f"https://{url_object.long_url}"
+        return redirect(long_url, code=307)
     return "Url not Found"
 
 
